@@ -18,7 +18,7 @@ const IMG_SRC = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST
 
 async function callClaude(messages,systemPrompt){
   try{
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:systemPrompt,messages})});
+    const res=await fetch('https://liveas.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:systemPrompt,messages})});
     const data=await res.json();
     return data.content?.[0]?.text||'申し訳ありません。もう一度お試しください。';
   }catch{return '接続エラーが発生しました。もう一度お試しください。';}
