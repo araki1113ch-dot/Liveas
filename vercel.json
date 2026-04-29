@@ -1,6 +1,8 @@
 {
-  "rewrites": [
-    { "source": "/api/claude", "destination": "/api/claude" },
-    { "source": "/(.*)", "destination": "/public/index.html" }
-  ]
+  "functions": {
+    "api/claude.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
 }
