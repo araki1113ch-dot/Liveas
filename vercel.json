@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "outputDirectory": "public",
   "functions": {
     "api/claude.js": {
       "memory": 1024,
