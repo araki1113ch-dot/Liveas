@@ -334,8 +334,8 @@ function App() {
     ]);
     setTurnCount(1);
     if(tc && !entryWeather) setEntryWeather(tc);
+    // C案：最初のターンでは気づきカードを出さない（レベルだけ記録）
     if(fl && fl!=="INSIGHT_HOLD"){
-      setInsightFlag(fl);
       setInsightLevel(lvMap[fl] || 1);
     }
     setLoading(false);
@@ -386,8 +386,12 @@ function App() {
     const fl = extractInsightFlag(res);
     setMessages(prev=>[...prev, {role:"assistant", content:stripFlags(res)}]);
     if(tc && !entryWeather) setEntryWeather(tc);
-    if(fl && fl!=="INSIGHT_HOLD" && suggestCount<2){
+    // C案：最低3ターン以降に気づきカードを表示
+    if(fl && fl!=="INSIGHT_HOLD" && suggestCount<2 && nt>=3){
       setInsightFlag(fl);
+      setInsightLevel(lvMap[fl] || 1);
+    } else if(fl && fl!=="INSIGHT_HOLD"){
+      // レベルだけは記録しておく
       setInsightLevel(lvMap[fl] || 1);
     }
     setLoading(false);
@@ -580,18 +584,15 @@ function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeath
           </div>
         )}
 
-        {/* 気づき誘導カード */}
+        {/* 気づき誘導カード（B案：控えめ・小型） */}
         {insightMsg && !loading && (
-          <div style={{animation:"slideUp 0.5s ease",backgroundColor:"#F0F5EE",borderRadius:16,padding:"16px 18px",border:`1.5px solid ${GREEN}`,marginTop:4}}>
-            <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:14}}>
-              <div style={{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${GREEN},#2A5238)`,color:"#FFF8F0",fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>転</div>
-              <p style={{fontSize:13,color:DARK,lineHeight:1.9,margin:0,whiteSpace:"pre-wrap"}}>{insightMsg}</p>
-            </div>
-            <div style={{display:"flex",gap:10}}>
-              <button onClick={onWeather} style={{flex:1,backgroundColor:GREEN,color:"#FFF8F0",border:"none",borderRadius:24,padding:"11px 16px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:F}}>
-                今の状態を天気にする
+          <div style={{animation:"slideUp 0.5s ease",backgroundColor:"transparent",borderRadius:12,padding:"10px 12px",border:`1px solid ${WG}`,marginTop:4}}>
+            <p style={{fontSize:11,color:"#8C8070",lineHeight:1.7,margin:"0 0 8px 0",whiteSpace:"pre-wrap",textAlign:"center"}}>{insightMsg}</p>
+            <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+              <button onClick={onWeather} style={{backgroundColor:"transparent",border:`1px solid ${GREEN}`,color:GREEN,borderRadius:18,padding:"6px 14px",fontSize:11,cursor:"pointer",fontFamily:F}}>
+                ☀️ 今の状態を天気にする
               </button>
-              <button onClick={onContinue} style={{flex:1,backgroundColor:"transparent",border:`1.5px solid ${WG}`,color:"#6B6055",borderRadius:24,padding:"11px 16px",fontSize:13,cursor:"pointer",fontFamily:F}}>
+              <button onClick={onContinue} style={{backgroundColor:"transparent",border:`1px solid ${WG}`,color:"#8C8070",borderRadius:18,padding:"6px 14px",fontSize:11,cursor:"pointer",fontFamily:F}}>
                 もう少し話す
               </button>
             </div>
