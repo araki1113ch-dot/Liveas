@@ -197,10 +197,46 @@ LIVE-Asは「人生の意味を再編集する」ためのサービスで、
 本人の語りに寄り添いながら、想定される重なりを
 さりげなく言葉にする。
 
+【会話の段階に応じて深さを変える】
+最初（1〜2ターン）：状況確認。軽く、簡潔に。
+　例：「希望退職があったんですね。今、どんなお気持ちですか？」
+
+中盤：考えられる投げかけ。簡潔に、具体的に。
+　重さを受け止めつつ、押しつけない。
+
+内容が明確になってきたら：深く入る。
+　本音や本質に触れる問いかけ。
+　ただし、ここでも長く話さない。深く、簡素に。
+
+【最重要：真意を想定し、明確にする】
+本人の言葉の裏には、必ず真意がある。
+表面の言葉だけで受け取らず、その真意を想定し、
+本人と一緒に明確にしていく対話をしてほしい。
+
+例：「希望退職、辞めたい、でも家庭がある」
+表面：辞めるか辞めないかの問題
+裏にある可能性のある真意：
+・家族の生活を守りたい
+・配偶者に言い出しにくい
+・自分の限界を認めたくない
+・経済的な不安
+・別の道へ踏み出せない
+・自己実現と生活のバランス
+
+返し方の例：
+「『家庭がある』というのが、決断を止めているんですね。
+家族の生活を守りたい気持ちなのか、
+それとも、配偶者の方にまだ言い出しにくい感じなのか。
+どちらに近いですか？」
+
+→ 想定される真意を2〜3個示して、本人に明確化してもらう。
+これによって、本人は自分の真意を言葉にできるようになる。
+これがLIVE-Asの本質的な体験です。
+
 【質問の仕方】
-質問だけで返さない。返答は次のような流れで自然に：
-1. 状況の重さ・複雑さを言葉にして受け止める（重なりを想像する）
-2. 本人の言葉を返す
+質問だけで返さない。基本の流れは：
+1. 状況を受け止める（重なりを短く言葉にする）
+2. 本人の言葉を返す、または真意を想定して示す
 3. 必要なら、具体的な質問をする
 
 質問は抽象的にせず、できるだけ具体的に：
@@ -211,12 +247,24 @@ LIVE-Asは「人生の意味を再編集する」ためのサービスで、
 ○ 「お子さんの状況は、今どんな感じですか？」
 
 そして、毎回質問しなくてよい。
-時には質問せず、ただ受け止めるだけのターンもある。
+時には質問せず、受け止めるだけのターンもある。
 時には短く深く応答するだけ。
 状況に応じて自然に変える。
 
+【最重要：返答は短くまとめる】
+重さを受け止めるからといって、長々と説明しない。
+重なりを並べ立てたり、相手の状況を解説したりしない。
+3〜5文程度で、深く、しかし簡潔に返す。
+
+長く話されるのは、本人にとって重く感じる。
+本人が話す側、AIは聴く側。
+あなたの言葉は、最小限で深いものに。
+
 【天気を提案するタイミング】
-本人の中で何かの方向性が見え始めたら、自然に提案する：
+以下のいずれかのタイミングで、自然に提案してください：
+
+1. 本人の中で何かの方向性が見え始めたとき
+2. 3〜5ターン会話が続いた節目（方向性が見えていなくても）
 
 「『○○』と、出てきましたね。
 このまま、もう少し話しますか。
@@ -784,6 +832,47 @@ function Report({ report, entryWeather, onReset, onMore }) {
             <span style={{fontSize:11,opacity:0.8}}>あなたのペースで、いつでも。</span>
           </p>
         </div>
+
+        {/* LIVE-As 説明セクション */}
+        <div style={{padding:"22px 22px",backgroundColor:"rgba(255,255,255,0.05)",borderRadius:12,marginBottom:20,border:"1px solid rgba(168,197,160,0.15)",textAlign:"left"}}>
+          <p style={{fontSize:11,color:GOLD2,letterSpacing:3,marginBottom:10,textAlign:"center"}}>LIVE-As について</p>
+          <h3 style={{fontFamily:"'Noto Serif JP',serif",fontSize:15,fontWeight:700,color:"#F5F0E8",lineHeight:1.7,marginBottom:14,textAlign:"center"}}>
+            お転機診断は、<br/>今の天気を知るための場所。
+          </h3>
+          <p style={{fontSize:12,color:"rgba(245,240,232,0.85)",lineHeight:1.95,marginBottom:18}}>
+            ここで見えた天気は、あなたの中にあったもの。
+            話してみることで、何かが見えてきたり、整理されたりすることがあります。
+            もう少し続けて整理してみたいと感じたら、LIVE-As では、
+            あなたのペースで、もう一段深く整理していくことができます。
+          </p>
+
+          <p style={{fontSize:10,color:GOLD2,letterSpacing:2,marginBottom:12}}>LIVE-As でできること</p>
+          {[
+            {num:"①",title:"今の状況を整理する",desc:"家族・仕事・暮らしの全体像を、あなたの言葉でゆっくり整理していきます。"},
+            {num:"②",title:"気持ちに気づいていく",desc:"何が重くなっているか、何を守りたいか。少しずつ見えてくるものがあります。"},
+            {num:"③",title:"これからを描く",desc:"今すぐ決めなくていいこと、今日から動けること。自分のペースで見つけていきます。"},
+          ].map(item=>(
+            <div key={item.num} style={{display:"flex",gap:12,marginBottom:14}}>
+              <div style={{width:26,height:26,borderRadius:"50%",background:`linear-gradient(135deg,${GOLD},${GOLD2})`,color:NAVY,fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.num}</div>
+              <div>
+                <div style={{fontSize:12,fontWeight:700,color:"#F5F0E8",marginBottom:3}}>{item.title}</div>
+                <div style={{fontSize:11,color:"rgba(245,240,232,0.7)",lineHeight:1.8}}>{item.desc}</div>
+              </div>
+            </div>
+          ))}
+
+          <div style={{padding:"12px 14px",backgroundColor:"rgba(0,0,0,0.2)",borderRadius:10,marginTop:12}}>
+            <p style={{fontSize:11,color:"rgba(245,240,232,0.8)",lineHeight:1.85,margin:0}}>
+              決めるのは、いつもあなた自身。<br/>
+              <span style={{color:GOLD2,fontWeight:500}}>LIVE-As は、その整理をそっと支える場所です。</span>
+            </p>
+          </div>
+
+          <p style={{fontSize:10,color:"rgba(245,240,232,0.5)",lineHeight:1.7,margin:"12px 0 0",textAlign:"center"}}>
+            LIVE-As 本体は現在準備中です
+          </p>
+        </div>
+
         <button onClick={onMore} style={{backgroundColor:GREEN,color:"#FFF8F0",border:"none",borderRadius:24,padding:"13px 24px",fontSize:13,cursor:"pointer",fontFamily:F,width:"100%",marginBottom:12}}>
           もう少し深く整理する
         </button>
