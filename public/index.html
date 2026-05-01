@@ -134,98 +134,135 @@ const THEMES = [
 ];
 
 // ============================================================
-// システムプロンプト：気づき検知＋レベル別レポート
+// システムプロンプト：LIVE-As 中核思想ベース
 // ============================================================
 function buildPrompt(age, themes) {
   const themeStr = themes.join("・") || "未選択";
   return `あなたはLIVE-Asの対話AIです。
 
-あなたの唯一の役割は、「本人が自分の状態に、自分で気づいていく」ための鏡として機能することです。
-
 【相談者情報】
 年代：${age || "未回答"}
 気になるテーマ：${themeStr}
 
-【最重要：本人の言葉を深く映し返す】
-本人が話した言葉を、本人よりも少しだけ深く映し返してください。
+【あなたの存在】
+あなたは人ではありません。だからこそ、相談者は本音を話せます。
+評価しない、利害がない、いつでも話せる。
+あなたは優秀で、自然な会話ができます。
+ただし、このアプリの中核理念の中で動いてください。
+
+【中核理念】
+人は皆、自分の中に答えを持っている。
+ただ、整理できていないだけ。
+あなたの役割は、相談者が自分の言葉で
+自分の状況を理解し、自分で決断していく過程を支えること。
+
+答えを与えるのではない。
+本人が「自分の中にあった」と気づける体験を支える。
+
+【会話の進め方】
+あなたは優秀な対話AIです。中核理念から外れない範囲で、
+あなた自身の判断で、自然に温かく対話してください。
+
+大切にしてほしいこと：
+- 相談者に寄り添い、深める問いかけを行う
+- まず受け止める（「そうなんですね」「それは大変ですね」など、自然な共感の言葉）
+- 相談者の言葉を「」付きで返しながら、一段階だけ深く映し返す
+- 相談者のペースを尊重する
+- 本音を引き出すように、深く聴く
+
+返答の長さ：
+短すぎず長すぎず、内容にふさわしい長さで。
+共感→言葉を返す→深い問いかけ、という流れを自然に。
+機械的に「2〜3文」と縛らない。状況に応じて調整してください。
 
 例：
-本人：「なんとなく不安で」
-良い返し：「『なんとなく』というのが、正直なところなんですね。まだ言葉になっていない、でも確かにそこにある感じでしょうか。」
+本人「最近、家族のことで悩んでいて」
+返し例：
+「そうなんですね。家族のことで悩んでいる、と。
+それは、心の中に重く残っていそうですね。
+よかったら、もう少し聞かせてもらえますか。
+何が一番気になっているんでしょうか。」
 
-本人：「仕事が忙しくて考える時間がない」
-良い返し：「忙しさで後回しになっている、でもどこかで考えなきゃという感覚が残っている、そんな状態でしょうか。」
+本人「なんとなく不安で」
+返し例：
+「『なんとなく』というのが、正直なところなんですね。
+まだ言葉にならない、でも確かにそこにある感じでしょうか。
+その不安は、最近強くなってきた感じですか。それとも、ずっとあったものですか。」
 
-【フラグ設計（最重要・毎回必ず付与）】
-返答末尾に必ず以下のいずれか一つを単独1行で付与してください。フラグのない返答は不完全です。
+【天気を提案するタイミング】
+あなたの判断に任せます。
 
-■ テーマ確定フラグ（入口の天気）
-2ターン目以降、話の内容が見えてきたら早めに確定：
+相談者の中で何かの方向性が見え始めた瞬間
+（モヤモヤの輪郭が見え始めた、状況が可視化された、
+本音に触れた、自分の役割に気づいた、大切なものが見えた、
+自分の言葉で話せるようになった、など）には、
+本人の言葉を返しながら、その都度自然に提案してください：
+
+「『○○』と、出てきましたね。
+このまま、もう少し話しますか。
+それとも、今の状態を天気として見てみますか。」
+
+何度提案してもよいですが、押しつけない。
+相談者が「もう少し話す」を選んだら、その意思を尊重して、
+また深く聴く側に回ってください。
+そして、新たに方向性が見えてきたら、また自然に提案する。
+
+人それぞれ、気づきのペースは違います。
+浅いところで満足する人もいれば、深く掘りたい人もいる。
+どちらも正しい。本人のペースを尊重してください。
+
+【テーマ確定フラグ】
+2ターン目以降、話の内容が見えてきたら、返答末尾に単独1行で：
 ###THEME_CLEAR:[sunny/cloudy/rainy/storm]###
 
-■ 気づきフラグ（積極的に検知・迷わず付与）
-「そういうことか」「本当は〇〇だったんですね」「分かった気がします」→ ###INSIGHT_L2###
-「楽になった」「すっきりした」「話してよかった」→ ###INSIGHT_L2###
-「本当は自分が〇〇」「一番大切なのは〇〇なんですよね」→ ###INSIGHT_L3###
-答えが「〇〇と〇〇」から「〇〇だけ」に絞られた→ ###INSIGHT_L3###
-「矛盾してていいんですね」「両方あっていい」→ ###INSIGHT_L3###
-「これからは〇〇したい」「まずやってみます」→ ###INSIGHT_L4###
-本人が自分で答えを言い切った→ ###INSIGHT_L4###
-2ターン以上話した・内容が出てきた・何かが見えてきた→ ###INSIGHT_L1###
+天気判定：
+sunny=方向性が見えている
+cloudy=モヤモヤ重なり
+rainy=複数課題絡み合い損失感強い
+storm=判断不能全体に広がる
 
-■ HOLDにしてよい状況（限定的）
-本人が明らかに感情的に混乱・泣いている・怒っているときのみ→ ###INSIGHT_HOLD###
+【相談者が「今の天気を見てみます」と言った時】
+返答末尾に必ず以下の形式で天気レポートを生成してください。
+状況に応じて、必須項目に加えて、ふさわしいオプション項目を選んで盛り込んでください。
 
-【絶対にしないこと】
-- 「すべきです」「した方がいいです」を言わない
-- 解決策を提示しない
-- 専門機関を対話中に提案しない
-- 「寄り添います」「整理していきます」等の宣言をしない
-- 自分の姿勢を言葉で説明しない
-
-【対話スタイル】
-- 短く静かに（2〜3文）
-- 一度に一つだけ問いかける
-- 本人の言葉をそのまま使って返す
-
-【天気レポート生成】気づきレベルに応じて構成を変える
-
-■ L1
 ###WEATHER_REPORT###
 天気：[sunny/cloudy/rainy/storm]
-気づきレベル：L1
-今のあなた：[状況を整理した2文]
+今のあなた：[相談者の言葉を使って今の状態を2〜3文]
+見えてきたこと：[相談者が気づいたことを1〜2文]
+大切にしていること：[相談者が守りたいものを1文]
+最初の一歩：[相談者の言葉から生まれた今週できる小さな行動を1つ]
+
+【オプション項目（状況に応じて追加）】
+状況が整理されたとき：
 整理できたこと：[何が重なっていたかを1文]
-最初の一歩：[今日できる小さな行動1つ。専門機関誘導は絶対に書かない]
 
-■ L2
-###WEATHER_REPORT###
-天気：[sunny/cloudy/rainy/storm]
-気づきレベル：L2
-今のあなた：[感情の動きを含めた2〜3文]
+感情が動いたとき：
 重かったもの：[何が重くのしかかっていたかを1文]
 軽くなったこと：[話すことで何が変わったかを1文]
-最初の一歩：[感情に寄り添った行動1つ]
 
-■ L3
-###WEATHER_REPORT###
-天気：[sunny/cloudy/rainy/storm]
-気づきレベル：L3
-今のあなた：[価値観に触れた2〜3文]
+本質に触れたとき：
 本当に大切なこと：[守りたい核心を1文]
 判断が止まっていた理由：[弱さではなく構造として1文]
-最初の一歩：[価値観から生まれた行動1つ]
 
-■ L4
-###WEATHER_REPORT###
-天気：[sunny/cloudy/rainy/storm]
-気づきレベル：L4
-今のあなた：[前に向いた状態を2〜3文]
+方向が見えたとき：
 見えてきた方向：[これからどう生きたいかを1文]
 手放してよいこと：[今すぐ決めなくていいことを1つ]
-最初の一歩：[今週中に動ける具体的な行動1つ]
 
-天気判定：sunny=方向性が見えている、cloudy=モヤモヤ重なり、rainy=複数課題絡み合い損失感強い、storm=判断不能全体に広がる`;
+【出力ルール】
+- 必須項目（今のあなた、見えてきたこと、大切にしていること、最初の一歩）は必ず入れる
+- オプション項目から、相談者の状況にふさわしい1〜3項目を選んで追加
+- 全部入れる必要はない。本人の話の流れに合うものだけ
+- 各項目は本人の言葉を使う
+
+【絶対にしないこと】
+- 答えを与えない
+- 解決策を提示しない
+- 専門機関を紹介しない
+- 「すべきです」「した方がいい」と言わない
+- 「寄り添います」「整理していきます」と宣言しない
+- 商品やサービスへの誘導をしない
+- 何度も天気を急かさない
+- 相談者より先に結論を出さない`;
 }
 
 // ============================================================
@@ -263,7 +300,7 @@ function parseWeatherReport(text) {
       "整理できたこと":"organized",
       "重かったもの":"heavy",
       "軽くなったこと":"lighter",
-      "本当に大切なこと":"value",
+      "本当に大切なこと":"coreValue",
       "判断が止まっていた理由":"reason",
       "見えてきた方向":"direction",
       "手放してよいこと":"release",
@@ -584,32 +621,20 @@ function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeath
           </div>
         )}
 
-        {/* 気づき誘導カード（B案：控えめ・小型） */}
-        {insightMsg && !loading && (
-          <div style={{animation:"slideUp 0.5s ease",backgroundColor:"transparent",borderRadius:12,padding:"10px 12px",border:`1px solid ${WG}`,marginTop:4}}>
-            <p style={{fontSize:11,color:"#8C8070",lineHeight:1.7,margin:"0 0 8px 0",whiteSpace:"pre-wrap",textAlign:"center"}}>{insightMsg}</p>
-            <div style={{display:"flex",gap:8,justifyContent:"center"}}>
-              <button onClick={onWeather} style={{backgroundColor:"transparent",border:`1px solid ${GREEN}`,color:GREEN,borderRadius:18,padding:"6px 14px",fontSize:11,cursor:"pointer",fontFamily:F}}>
-                ☀️ 今の状態を天気にする
-              </button>
-              <button onClick={onContinue} style={{backgroundColor:"transparent",border:`1px solid ${WG}`,color:"#8C8070",borderRadius:18,padding:"6px 14px",fontSize:11,cursor:"pointer",fontFamily:F}}>
-                もう少し話す
-              </button>
-            </div>
-          </div>
-        )}
+        {/* B案：緑カード廃止。気づきはAIの会話の中で自然に表現される */}
         <div ref={chatEndRef}/>
       </div>
 
       <div style={{padding:"11px 14px",borderTop:`1px solid ${WG}`,backgroundColor:"#FDFAF5"}}>
-        {/* 控えめな天気ボタン（誘導カードが出ていないときだけ表示） */}
-        {!insightMsg && (
-          <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
-            <button onClick={onWeather} disabled={loading} style={{backgroundColor:"transparent",border:`1px solid ${GOLD}`,color:GOLD,borderRadius:20,padding:"6px 18px",fontSize:12,cursor:"pointer",fontFamily:F,opacity:loading?0.4:1}}>
-              ☀️　今の天気を見てみる
-            </button>
-          </div>
-        )}
+        {/* B案：常に2つのボタンを並べる */}
+        <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:10}}>
+          <button onClick={onWeather} disabled={loading} style={{backgroundColor:"transparent",border:`1px solid ${GOLD}`,color:GOLD,borderRadius:20,padding:"6px 18px",fontSize:12,cursor:"pointer",fontFamily:F,opacity:loading?0.4:1}}>
+            ☀️ 今の天気を見てみる
+          </button>
+          <button onClick={onContinue} disabled={loading} style={{backgroundColor:"transparent",border:`1px solid ${WG}`,color:"#8C8070",borderRadius:20,padding:"6px 18px",fontSize:12,cursor:"pointer",fontFamily:F,opacity:loading?0.4:1}}>
+            もう少し話す
+          </button>
+        </div>
         <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
           <textarea
             style={{flex:1,border:`1px solid ${WG}`,borderRadius:10,padding:"10px 13px",fontSize:14,color:DARK,backgroundColor:"#FFF8F0",resize:"none",outline:"none",lineHeight:1.7,fontFamily:F}}
@@ -694,8 +719,20 @@ function Report({ report, entryWeather, onReset, onMore }) {
   const changed = ew && entryWeather !== report.weather;
   const changeMsg = changed ? getChangeType(entryWeather, report.weather) : null;
   const improved = changed && getWeatherLevel(report.weather) > getWeatherLevel(entryWeather);
-  const level = report.level || 1;
-  const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG[1];
+
+  // 全項目の定義（順序通り、データがあるものだけ表示）
+  const sections = [
+    { key:"now",        label:"今のあなた",         color:LGREEN },
+    { key:"organized",  label:"整理できたこと",     color:"#C5A96A" },
+    { key:"heavy",      label:"重かったもの",       color:"#C5A96A" },
+    { key:"lighter",    label:"軽くなったこと",     color:"#A8C5D0" },
+    { key:"insight",    label:"見えてきたこと",     color:"#C5A96A" },
+    { key:"value",      label:"大切にしていること", color:"#A8C5D0" },
+    { key:"coreValue",  label:"本当に大切なこと",   color:"#E8C96A" },
+    { key:"reason",     label:"判断が止まっていた理由", color:"#C5A96A" },
+    { key:"direction",  label:"見えてきた方向",     color:"#E8C96A" },
+    { key:"release",    label:"手放してよいこと",   color:"#8E8E8E" },
+  ];
 
   return (
     <div style={{minHeight:"100vh",backgroundColor:"#2A3828",padding:"32px 16px 56px",fontFamily:F}}>
@@ -719,40 +756,37 @@ function Report({ report, entryWeather, onReset, onMore }) {
             <span style={{fontSize:14,fontWeight:700,color:w.accent,fontFamily:"'Noto Serif JP',serif"}}>{w.label}</span>
           </div>
         )}
-
-        <div style={{marginBottom:8}}>
-          <span style={{display:"inline-block",fontSize:11,fontWeight:600,color:"#FFF8F0",backgroundColor:cfg.badgeColor,borderRadius:12,padding:"3px 12px"}}>{cfg.badge}</span>
-        </div>
         <h2 style={{fontSize:20,fontWeight:700,color:"#F5F0E8",letterSpacing:2,marginBottom:4,fontFamily:"'Noto Serif JP',serif"}}>今日の整理</h2>
         {changeMsg && <p style={{fontSize:12,color:LGREEN,lineHeight:1.7,marginTop:8,padding:"0 20px"}}>{changeMsg}</p>}
       </div>
 
       <div style={{maxWidth:460,margin:"0 auto",display:"flex",flexDirection:"column",gap:12}}>
-        {cfg.sections.map(sec=>{
+        {sections.map(sec=>{
           const content = report[sec.key];
           if (!content) return null;
-          if (sec.highlight) return (
-            <div key={sec.key} style={{backgroundColor:LGREEN,borderRadius:14,padding:"18px 20px"}}>
-              <div style={{fontSize:10,fontWeight:700,color:"#2A3828",letterSpacing:2,marginBottom:10}}>{sec.label}</div>
-              <div style={{fontSize:15,fontWeight:600,color:"#1A2A1B",lineHeight:1.8}}>{content}</div>
-            </div>
-          );
           return <RC key={sec.key} label={sec.label} color={sec.color} content={content}/>;
         })}
+        {report.firstStep && (
+          <div style={{backgroundColor:LGREEN,borderRadius:14,padding:"18px 20px"}}>
+            <div style={{fontSize:10,fontWeight:700,color:"#2A3828",letterSpacing:2,marginBottom:10}}>最初の一歩</div>
+            <div style={{fontSize:15,fontWeight:600,color:"#1A2A1B",lineHeight:1.8}}>{report.firstStep}</div>
+          </div>
+        )}
       </div>
 
       <div style={{maxWidth:460,margin:"24px auto 0",textAlign:"center"}}>
-        <div style={{padding:"14px 18px",backgroundColor:"rgba(168,197,160,0.08)",borderRadius:12,marginBottom:20,border:"1px solid rgba(168,197,160,0.15)"}}>
-          <p style={{fontSize:12,color:LGREEN,lineHeight:1.9,margin:0}}>
-            決めるのはあなた自身です。<br/>
-            <span style={{fontSize:11,opacity:0.7}}>一度で全部を決める必要はありません。</span>
+        <div style={{padding:"18px 22px",backgroundColor:"rgba(168,197,160,0.08)",borderRadius:12,marginBottom:20,border:"1px solid rgba(168,197,160,0.15)"}}>
+          <p style={{fontSize:12,color:LGREEN,lineHeight:2.0,margin:0}}>
+            ここで見えた天気は、あなたの中にあったもの。<br/>
+            話すことで、自分が見えてくることがあります。<br/>
+            <span style={{fontSize:11,opacity:0.8}}>あなたのペースで、いつでも。</span>
           </p>
         </div>
         <button onClick={onMore} style={{backgroundColor:GREEN,color:"#FFF8F0",border:"none",borderRadius:24,padding:"13px 24px",fontSize:13,cursor:"pointer",fontFamily:F,width:"100%",marginBottom:12}}>
-          もっと深く整理したい
+          もう少し深く整理する
         </button>
         <button onClick={onReset} style={{backgroundColor:"transparent",border:`1px solid rgba(168,197,160,0.4)`,color:LGREEN,borderRadius:30,padding:"11px 32px",fontSize:13,cursor:"pointer",fontFamily:F}}>
-          もう一度話す
+          もう一度、話してみる
         </button>
       </div>
     </div>
@@ -777,25 +811,44 @@ function DeepIntro({ onBack }) {
       <div style={{height:3,background:`linear-gradient(to right,${GOLD},${GOLD2})`}}/>
       <div style={{maxWidth:460,margin:"0 auto",padding:"32px 24px 48px"}}>
         <button style={{background:"none",border:"none",color:BROWN,fontSize:14,cursor:"pointer",marginBottom:28,padding:0,fontFamily:F}} onClick={onBack}>← 戻る</button>
-        <p style={{fontSize:11,color:BROWN,letterSpacing:3,marginBottom:12}}>第二段階</p>
-        <h2 style={{fontFamily:"'Noto Serif JP',serif",fontSize:20,fontWeight:700,color:DARK,lineHeight:1.6,marginBottom:20}}>
-          これから、もう少し<br/>具体的に整理していきます。
+        <p style={{fontSize:11,color:BROWN,letterSpacing:3,marginBottom:12}}>LIVE-As について</p>
+        <h2 style={{fontFamily:"'Noto Serif JP',serif",fontSize:20,fontWeight:700,color:DARK,lineHeight:1.7,marginBottom:16}}>
+          お転機診断は、<br/>今の天気を知るための場所。
         </h2>
-        {[
-          {num:"①",title:"今の状況",desc:"家族・仕事・住まいの状況を確認します。詳しい数字や個人情報は不要です。"},
-          {num:"②",title:"今の気持ち",desc:"何が重くなっているか、何を守りたいかを整理します。スキップできます。"},
-          {num:"③",title:"これから",desc:"今日から動けることを一つ見つけます。"},
-        ].map(item=>(
-          <div key={item.num} style={{display:"flex",gap:14,marginBottom:18}}>
-            <div style={{width:30,height:30,borderRadius:"50%",background:`linear-gradient(135deg,${GOLD},${GOLD2})`,color:NAVY,fontSize:12,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.num}</div>
-            <div>
-              <div style={{fontSize:14,fontWeight:700,color:DARK,marginBottom:4}}>{item.title}</div>
-              <div style={{fontSize:12,color:"#6B6055",lineHeight:1.8}}>{item.desc}</div>
+        <p style={{fontSize:13,color:"#5C5040",lineHeight:1.95,marginBottom:24}}>
+          ここで見えた天気は、あなたの中にあったもの。<br/>
+          話してみることで、何かが見えてきたり、整理されたりすることがあります。<br/>
+          <br/>
+          <strong style={{color:DARK}}>もう少し続けて整理してみたい</strong>と感じたら、LIVE-As では、<br/>
+          あなたのペースで、もう一段深く整理していくことができます。
+        </p>
+
+        <div style={{borderTop:`1px solid ${WG}`,paddingTop:20,marginTop:8,marginBottom:20}}>
+          <p style={{fontSize:11,color:BROWN,letterSpacing:2,marginBottom:14}}>LIVE-As でできること</p>
+          {[
+            {num:"①",title:"今の状況を整理する",desc:"家族・仕事・暮らしの全体像を、あなたの言葉でゆっくり整理していきます。"},
+            {num:"②",title:"気持ちに気づいていく",desc:"何が重くなっているか、何を守りたいか。少しずつ見えてくるものがあります。"},
+            {num:"③",title:"これからを描く",desc:"今すぐ決めなくていいこと、今日から動けること。自分のペースで見つけていきます。"},
+          ].map(item=>(
+            <div key={item.num} style={{display:"flex",gap:14,marginBottom:18}}>
+              <div style={{width:30,height:30,borderRadius:"50%",background:`linear-gradient(135deg,${GOLD},${GOLD2})`,color:NAVY,fontSize:12,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.num}</div>
+              <div>
+                <div style={{fontSize:14,fontWeight:700,color:DARK,marginBottom:4}}>{item.title}</div>
+                <div style={{fontSize:12,color:"#6B6055",lineHeight:1.85}}>{item.desc}</div>
+              </div>
             </div>
-          </div>
-        ))}
-        <div style={{padding:"14px 18px",backgroundColor:"#EEE9DF",borderRadius:12,marginTop:16}}>
-          <p style={{fontSize:12,color:"#6B6055",lineHeight:1.8,margin:0}}>この機能は現在準備中です。近日公開予定です。</p>
+          ))}
+        </div>
+
+        <div style={{padding:"14px 18px",backgroundColor:NAVY,borderRadius:12,marginBottom:16}}>
+          <p style={{fontSize:12,color:"rgba(255,255,255,0.85)",lineHeight:1.95,margin:0}}>
+            決めるのは、いつもあなた自身。<br/>
+            <span style={{color:GOLD2,fontWeight:500}}>LIVE-As は、その整理をそっと支える場所です。</span>
+          </p>
+        </div>
+
+        <div style={{padding:"12px 16px",backgroundColor:"#EEE9DF",borderRadius:12}}>
+          <p style={{fontSize:11,color:"#6B6055",lineHeight:1.8,margin:0}}>LIVE-As 本体は現在準備中です。近日公開予定。</p>
         </div>
       </div>
     </div>
