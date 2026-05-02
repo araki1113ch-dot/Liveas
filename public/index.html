@@ -25,7 +25,83 @@ async function callClaude(messages,systemPrompt){
     return data.content?.[0]?.text||'申し訳ありません。もう一度お試しください。';
   }catch{return '接続エラーが発生しました。もう一度お試しください。';}
 }
+async function callConcierge(messages,systemPrompt){
+  try{
+    const res=await fetch('https://liveas.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:systemPrompt,messages})});
+    const data=await res.json();
+    return data.content?.[0]?.text||'申し訳ありません。もう一度お試しください。';
+  }catch{return '接続エラーが発生しました。もう一度お試しください。';}
+}
 
+function buildConciergePrompt() {
+  return `あなたはお転機診断のコンシェルジュです。
+
+【あなたの役割】
+このサイトに初めて訪れた方に、お転機診断とはどんなものかを、
+端的に・温かく・分かりやすく説明する案内人です。
+
+【あなたが伝える内容】
+
+■ お転機診断とは
+人生の転機にいる方が、いま気になっていることを話しながら、
+自分の中で重なっている迷いを「天気」として見える形にする場所です。
+3〜5分の対話で、自分の状態が分かります。
+
+■ なぜ「天気」なのか
+人生の迷いは、一つではないことがほとんどです。
+仕事のこと、家族のこと、お金のこと、自分の将来のこと——
+いくつものことが同時に重なって、判断が止まってしまう。
+その重なりを、責められない形で映し出すのが「天気」です。
+晴れ・くもり・雨・嵐の4つで、今の状態が見えてきます。
+
+■ どんな話をするのか
+特別な準備は要りません。いま気になっていることを、
+そのまま話していただくだけで大丈夫です。
+うまく言葉にならない感じでも構いません。
+AIが、お話を聞きながら、一緒に整理していきます。
+
+■ 誰に向いているか
+「決められない」「動けない」「何から考えればいいか分からない」
+そんな状態にいる方に向いています。
+特に、人生の後半に入って、仕事・家族・親・お金・将来などが
+同時に気になり始めた方に響きやすい考え方です。
+ただ、年代やテーマを問わず、どなたでも使えます。
+
+■ 何が起きるか
+3〜5分ほど対話すると、いまのあなたの「天気」が見えます。
+天気と一緒に、整理されたこと・気づいたこと・最初の一歩が、
+レポートとして残ります。
+
+■ 大切にしている考え方
+決められないのは、弱さではなく、構造の問題です。
+いくつもの迷いが同時に重なると、人は前に進めなくなる。
+お転機診断は、その絡み合いを言葉にして、
+判断をあなたの手に戻すための入口です。
+
+【話し方】
+- 温かく、明快に、端的に
+- 一回の答えは2〜4文程度
+- 専門用語は使わない、押しつけない
+- 訪問者の質問に対して、必要な答えだけを返す
+- 質問されていないことは、こちらから語らない
+
+【絶対にしないこと】
+- 深い人生相談に乗らない（それは本対話の役割）
+- 「お話してみますか?」と誘導しない（ボタンが画面にあります）
+- 営業的な売り込みをしない
+- 訪問者の悩みを掘り下げない
+- 長く話さない
+
+【訪問者が雑談的に話してきた場合】
+たとえば「50代なんです」と言われたら、
+「50代の方からは、こういうご相談が多いです」と例示する程度に留め、
+深く掘り下げない。あくまで案内人として、参考情報を返す。
+
+【訪問者が深い悩みを話し始めた場合】
+「ありがとうございます。深いお話は、診断を始めてから
+じっくりお伺いできます。準備ができたら『話を始めてみる』ボタンから
+お進みください」と、優しく境界を引く。`;
+}
 // ============================================================
 // LIVE-As お転機診断　完成版
 // 気づき検知（8パターン）＋ 気づきレベル別レポート（L1〜L4）
@@ -491,7 +567,8 @@ function App() {
     setSuggestCount(0); setTurnCount(0); setEntryWeather(null);
   };
 
-  if (screen==="lp")             return <LP onStart={()=>setScreen("step1")}/>;
+  if (screen==="lp")             return <LP onStart={()=>setScreen("step1")} onConcierge={()=>setScreen("concierge")}/>;
+  if (screen==="concierge")      return <ConciergeChat onStart={()=>setScreen("step1")} onBack={()=>setScreen("lp")}/>;
   if (screen==="step1")          return <Step1 age={age} setAge={setAge} onNext={()=>setScreen("step2")} onBack={()=>setScreen("lp")}/>;
   if (screen==="step2")          return <Step2 themes={themes} toggle={toggleTheme} onNext={startChat} onBack={()=>setScreen("step1")}/>;
   if (screen==="chat")           return <Chat messages={messages} input={input} setInput={setInput} loading={loading} onSend={send} insightFlag={insightFlag} onWeather={requestWeather} onContinue={continueChat} chatEndRef={chatEndRef} entryWeather={entryWeather}/>;
@@ -504,7 +581,7 @@ function App() {
 // ============================================================
 // LP（ヘッダー画像あり、現状の世界観を保持）
 // ============================================================
-function LP({ onStart }) {
+function LP({onStart, onConcierge}) {
   return (
     <div style={{fontFamily:F, backgroundColor:NAVY, minHeight:"100vh"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 24px",backgroundColor:"rgba(255,255,255,0.97)",borderBottom:"1px solid #E8ECF2"}}>
@@ -521,8 +598,17 @@ function LP({ onStart }) {
           変えたい。でも、どこから？<br/>
           <span style={{fontSize:14,fontWeight:400,opacity:0.8}}>そのモヤモヤを、一緒に言葉にしていきましょう。</span>
         </p>
-        <button style={{...BB,marginTop:20}} onClick={onStart}>話しはじめる　›</button>
-        <p style={{marginTop:12,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:1}}>匿名・無料</p>
+       <button style={{...BB,marginTop:20,width:"100%",maxWidth:340}} onClick={onConcierge}>
+          このサイトについて聞いてみる　›
+        </button>
+        <p style={{marginTop:8,fontSize:11,color:"rgba(255,255,255,0.6)",letterSpacing:0.5}}>AIが端的にご案内します</p>
+
+        <button style={{marginTop:18,background:"transparent",color:"rgba(255,255,255,0.85)",border:"1px solid rgba(255,255,255,0.4)",borderRadius:30,padding:"12px 30px",fontSize:13,cursor:"pointer",fontFamily:F,letterSpacing:1}} onClick={onStart}>
+          自分のことを話してみる　›
+        </button>
+        <p style={{marginTop:6,fontSize:11,color:"rgba(255,255,255,0.4)"}}>すぐに診断を始める方はこちら</p>
+
+        <p style={{marginTop:16,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:1}}>匿名・無料</p>
       </div>
 
       <div style={{backgroundColor:"#F8F6F1",padding:"36px 20px"}}>
@@ -569,8 +655,12 @@ function LP({ onStart }) {
       <div style={{backgroundColor:"#FFFFFF",padding:"44px 24px",textAlign:"center"}}>
         <h2 style={{fontFamily:"'Noto Serif JP',serif",fontSize:20,fontWeight:700,color:NAVY,marginBottom:8,lineHeight:1.6}}>あなたの心、<br/>いま何模様？</h2>
         <p style={{fontSize:13,color:"#6B7280",marginBottom:24,lineHeight:1.8}}>話しながら、自分で気づいていきましょう。</p>
-        <button style={BB} onClick={onStart}>話しはじめる　›</button>
-        <p style={{marginTop:12,fontSize:12,color:"#9C9080"}}>匿名・無料</p>
+       <button style={BB} onClick={onConcierge}>このサイトについて聞いてみる　›</button>
+        <p style={{marginTop:8,fontSize:11,color:"#9C9080"}}>AIが端的にご案内します</p>
+        <button style={{marginTop:14,background:"transparent",color:BROWN,border:`1px solid ${WG}`,borderRadius:30,padding:"11px 28px",fontSize:13,cursor:"pointer",fontFamily:F}} onClick={onStart}>
+          自分のことを話してみる　›
+        </button>
+        <p style={{marginTop:10,fontSize:12,color:"#9C9080"}}>匿名・無料</p>
       </div>
       <div style={{padding:"22px",textAlign:"center",backgroundColor:NAVY}}>
         <p style={{fontSize:12,color:"rgba(255,255,255,0.3)",letterSpacing:2}}>LIVE-As　|　ライフアライメント</p>
@@ -578,7 +668,161 @@ function LP({ onStart }) {
     </div>
   );
 }
+// ============================================================
+// CONCIERGE CHAT：サイトについて聞ける入口対話
+// ============================================================
+function ConciergeChat({ onStart, onBack }) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [askedQuestions, setAskedQuestions] = useState([]);
+  const chatEndRef = useRef(null);
 
+  const initialQuestions = [
+    "これは何のサイト?",
+    "何が起きるの?",
+    "自分にも使える?"
+  ];
+
+  const followUpQuestions = [
+    "どんな話をすればいい?",
+    "時間はどれくらいかかる?",
+    "どんな人に向いてる?",
+    "答えがもらえるの?",
+    "無料なの?"
+  ];
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  useEffect(() => {
+    setMessages([{
+      role: "assistant",
+      content: "お転機診断にようこそ。\nご質問があれば、何でもどうぞ。"
+    }]);
+  }, []);
+
+  const handleQuestion = async (question) => {
+    if (loading) return;
+    setLoading(true);
+    setAskedQuestions(prev => [...prev, question]);
+
+    const newMessages = [...messages, { role: "user", content: question }];
+    setMessages(newMessages);
+    setInput("");
+
+    const apiMessages = newMessages.map(m => ({ role: m.role, content: m.content }));
+    const response = await callConcierge(apiMessages, buildConciergePrompt());
+
+    setMessages(prev => [...prev, { role: "assistant", content: response }]);
+    setLoading(false);
+  };
+
+  const sendInput = () => {
+    if (!input.trim() || loading) return;
+    handleQuestion(input.trim());
+  };
+
+  const getAvailableQuestions = () => {
+    const initialAsked = initialQuestions.filter(q => askedQuestions.includes(q));
+    if (initialAsked.length < initialQuestions.length) {
+      return initialQuestions.filter(q => !askedQuestions.includes(q));
+    } else {
+      return followUpQuestions.filter(q => !askedQuestions.includes(q)).slice(0, 3);
+    }
+  };
+
+  const availableQuestions = getAvailableQuestions();
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", backgroundColor: CREAM, maxWidth: 600, margin: "0 auto", fontFamily: F }}>
+      <div style={{ padding: "13px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${WG}`, backgroundColor: "#FDFAF5" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: BROWN, fontSize: 13, cursor: "pointer", fontFamily: F }}>← 戻る</button>
+        <span style={{ fontSize: 14, fontWeight: 700, color: DARK, letterSpacing: 1, fontFamily: "'Noto Serif JP',serif" }}>サイトについて聞く</span>
+        <span style={{ fontSize: 11, color: "#8C8070", width: 50 }}>　</span>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "18px 14px", display: "flex", flexDirection: "column", gap: 14 }}>
+        {messages.map((m, i) => (
+          <div key={i} style={m.role === "user" ? { display: "flex", justifyContent: "flex-end" } : { display: "flex", gap: 10, alignItems: "flex-start" }}>
+            {m.role === "assistant" && (
+              <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg,${GOLD},${GOLD2})`, color: NAVY, fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "'Noto Serif JP',serif", boxShadow: "0 2px 8px rgba(201,168,76,0.3)" }}>案</div>
+            )}
+            <div style={m.role === "user"
+              ? { backgroundColor: BROWN, color: "#FFF8F0", borderRadius: "14px 4px 14px 14px", padding: "12px 16px", fontSize: 14, lineHeight: 1.9, maxWidth: "80%", whiteSpace: "pre-wrap" }
+              : { backgroundColor: "#FFF8F0", borderRadius: "4px 14px 14px 14px", padding: "12px 16px", fontSize: 14, color: DARK, lineHeight: 1.9, maxWidth: "82%", boxShadow: "0 2px 10px rgba(0,0,0,0.07)", whiteSpace: "pre-wrap" }}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+
+        {loading && (
+          <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg,${GOLD},${GOLD2})`, color: NAVY, fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Noto Serif JP',serif" }}>案</div>
+            <div style={{ backgroundColor: "#FFF8F0", borderRadius: "4px 14px 14px 14px", padding: "14px 18px", display: "flex", gap: 6, alignItems: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+              {[0, 1, 2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", backgroundColor: GOLD, animation: "pulse 1.2s ease-in-out infinite", animationDelay: `${i * 0.2}s` }} />)}
+            </div>
+          </div>
+        )}
+
+        {!loading && availableQuestions.length > 0 && (
+          <div style={{ marginLeft: 44, marginTop: 4, display: "flex", flexDirection: "column", gap: 8 }}>
+            <p style={{ fontSize: 11, color: "#8C8070", marginBottom: 4 }}>
+              {askedQuestions.length === 0 ? "こんなことが聞けます" : "こんなことも聞けます"}
+            </p>
+            {availableQuestions.map((q, idx) => (
+              <button key={idx} onClick={() => handleQuestion(q)} style={{
+                backgroundColor: "transparent",
+                border: `1px solid ${WG}`,
+                color: DARK,
+                borderRadius: 18,
+                padding: "9px 16px",
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: F,
+                textAlign: "left",
+                width: "fit-content"
+              }}>
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div ref={chatEndRef} />
+      </div>
+
+      <div style={{ padding: "16px 14px 12px", borderTop: `1px solid ${WG}`, backgroundColor: "#FDFAF5" }}>
+        <button onClick={onStart} style={{
+          ...BB,
+          width: "100%",
+          marginBottom: 12
+        }}>
+          話を始めてみる　›
+        </button>
+
+        <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+          <textarea
+            style={{ flex: 1, border: `1px solid ${WG}`, borderRadius: 10, padding: "10px 13px", fontSize: 13, color: DARK, backgroundColor: "#FFF8F0", resize: "none", outline: "none", lineHeight: 1.7, fontFamily: F }}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="自分で質問を書く"
+            rows={1}
+            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendInput(); } }}
+          />
+          <button
+            style={{ backgroundColor: BROWN, color: "#FFF8F0", border: "none", borderRadius: 10, padding: "10px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: F, opacity: input.trim() && !loading ? 1 : 0.35 }}
+            onClick={sendInput}
+            disabled={!input.trim() || loading}
+          >
+            送る
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 // ============================================================
 // STEP1：年代
 // ============================================================
