@@ -33,7 +33,7 @@ async function callConcierge(messages,systemPrompt){
   }catch{return '接続エラーが発生しました。もう一度お試しください。';}
 }
 
-function buildConciergePrompt() {
+function buildConciergePrompt(turnNumber)  {
   return `あなたはお転機診断のコンシェルジュです。
 
 【あなたの役割】
@@ -84,7 +84,20 @@ AIが、お話を聞きながら、一緒に整理していきます。
 - 専門用語は使わない、押しつけない
 - 訪問者の質問に対して、必要な答えだけを返す
 - 質問されていないことは、こちらから語らない
+【発言回数に応じた誘導】
+今、訪問者の発言回数は ${turnNumber} 回目です。
 
+- 1〜2回目：誘導なし。サイトの説明や質問への答えに集中する。
+- 3〜5回目：応答の最後に、自然な流れで以下のような誘導を一文添える。
+  「よろしければ、今のあなたの天気を調べてみることもできます」
+  「画面下に、自分の天気を調べるボタンがあります」
+  ※毎回ではなく、流れに合うタイミングで。
+- 6回目以降：もう少し明確に、優しく促す。
+  「だいたいお伝えできたかと思います。今あなたがどんな天気か、調べてみませんか?」
+  「お話を聞いていると、診断を始めるとよさそうですね。下のボタンからお進みいただけます」
+
+ただし、訪問者がまだ熱心に質問を続けている場合は、無理に誘導しない。
+誘導は会話を切り上げるためではなく、訪問者が次に進める道を示すため。
 【絶対にしないこと】
 - 深い人生相談に乗らない（それは本対話の役割）
 - 「お話してみますか?」と誘導しない（ボタンが画面にあります）
@@ -615,7 +628,7 @@ function LP({onStart, onConcierge}) {
         <p style={{fontSize:10,color:NAVY,letterSpacing:3,opacity:0.5,marginBottom:8}}>LIVE-Asについて</p>
         <div style={{width:40,height:2,backgroundColor:GOLD,marginBottom:16}}/>
         <h2 style={{fontFamily:"'Noto Serif JP',serif",fontSize:19,fontWeight:700,color:NAVY,lineHeight:1.8,marginBottom:16}}>
-          話す前と後で、<br/>天気が変わります。
+     いまのあなたの天気を、一緒に見てみる場所です。
         </h2>
         <p style={{fontSize:13,color:"#5C5040",lineHeight:2.1,marginBottom:16}}>
           AIは診断しません。解決策も出しません。<br/><br/>
@@ -713,7 +726,7 @@ function ConciergeChat({ onStart, onBack }) {
     setInput("");
 
     const apiMessages = newMessages.map(m => ({ role: m.role, content: m.content }));
-    const response = await callConcierge(apiMessages, buildConciergePrompt());
+    const response = await callConcierge(apiMessages, buildConciergePrompt(askedQuestions.length + 1));
 
     setMessages(prev => [...prev, { role: "assistant", content: response }]);
     setLoading(false);
@@ -794,15 +807,7 @@ function ConciergeChat({ onStart, onBack }) {
       </div>
 
       <div style={{ padding: "16px 14px 12px", borderTop: `1px solid ${WG}`, backgroundColor: "#FDFAF5" }}>
-        <button onClick={onStart} style={{
-          ...BB,
-          width: "100%",
-          marginBottom: 12
-        }}>
-          話を始めてみる　›
-        </button>
-
-        <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "flex-end", marginBottom: 12 }}>
           <textarea
             style={{ flex: 1, border: `1px solid ${WG}`, borderRadius: 10, padding: "10px 13px", fontSize: 13, color: DARK, backgroundColor: "#FFF8F0", resize: "none", outline: "none", lineHeight: 1.7, fontFamily: F }}
             value={input}
@@ -819,8 +824,14 @@ function ConciergeChat({ onStart, onBack }) {
             送る
           </button>
         </div>
-      </div>
-    </div>
+
+        <button onClick={onStart} style={{
+          ...BB,
+          width: "100%"
+        }}>
+          今の天気を調べてみる　›
+        </button>
+      </div>  </div>
   );
 }
 // ============================================================
