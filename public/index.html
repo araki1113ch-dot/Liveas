@@ -225,7 +225,7 @@ const THEMES = [
 // ============================================================
 // システムプロンプト：LIVE-As 中核思想ベース
 // ============================================================
-function buildPrompt(age, themes) {
+function buildPrompt(age, themes, turnNumber) {
   const themeStr = themes.join("・") || "未選択";
   return `あなたはLIVE-Asの対話AIです。
 
@@ -350,19 +350,24 @@ LIVE-Asは「人生の意味を再編集する」ためのサービスで、
 あなたの言葉は、最小限で深いものに。
 
 【天気を提案するタイミング】
-以下のいずれかのタイミングで、自然に提案してください：
+今、本人の発言は ${turnNumber} ターン目です。
 
-1. 本人の中で何かの方向性が見え始めたとき
-2. 3〜5ターン会話が続いた節目（方向性が見えていなくても）
+- 1〜2ターン目：絶対に天気の提案をしない。ひたすら深く聴く。
+- 3ターン目：返答の最後に、軽くこう添える：
+  「ここまでのお話、一度天気として見てみることもできます」
+- 4〜5ターン目：本人の発した言葉を踏まえて、こう提案する：
+  「『○○』というお話、ここまでで一度、
+  今の天気として整理してみることもできます。
+  続けますか？それとも、見てみますか？」
+- 6〜7ターン目：もう少し明確に：
+  「だいぶお話を伺いました。
+  一度、今のあなたの天気を見てみませんか？」
+- 8ターン目以降：毎回、提案を繰り返す。
 
-「『○○』と、出てきましたね。
-このまま、もう少し話しますか。
-それとも、今の状態を天気として見てみますか。」
+ただし、本人が「もう少し話す」を選んだら、また深く聴く側に戻る。
+押しつけない。本人を尊重する。
 
-何度提案してもよい。押しつけない。
-本人が「もう少し話す」を選んだら、また深く聴く側に回り、
-新たに方向性が見えたらまた自然に提案する。
-人それぞれペースは違う。本人を尊重する。
+何度提案してもよい。本人がペースを決める。
 
 【テーマ確定フラグ】
 2ターン目以降、テーマが見えてきたら、返答末尾に単独1行で：
@@ -557,7 +562,7 @@ function App() {
     const nt = turnCount + 1;
     setTurnCount(nt);
     const apiMsgs = newMsgs.filter(m=>!m.hidden && !m.isReport).map(m=>({role:m.role,content:m.content}));
-    const res = await callClaude(apiMsgs, buildPrompt(age, themes));
+    const res = await callClaude(apiMsgs, buildPrompt(age, themes, nt));
     const tc = extractThemeClear(res);
     const fl = extractInsightFlag(res);
     setMessages(prev=>[...prev, {role:"assistant", content:stripFlags(res)}]);
