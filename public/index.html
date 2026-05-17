@@ -465,6 +465,7 @@ function stripFlags(t){
   return t.replace(/###THEME_CLEAR:(sunny|cloudy|rainy|storm)###/g,"")
           .replace(/###INSIGHT_L[1-4]###/g,"")
           .replace(/###INSIGHT_HOLD###/g,"")
+          .replace(/###WEATHER_REPORT###[\s\S]*$/g,"")
           .trim();
 }
 function parseWeatherReport(text) {
