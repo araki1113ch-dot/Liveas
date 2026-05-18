@@ -606,7 +606,12 @@ function App() {
     const res = await callClaude(apiMsgs, buildPrompt(age, themes, nt));
     const tc = extractThemeClear(res);
     const fl = extractInsightFlag(res);
-    setMessages(prev=>[...prev, {role:"assistant", content:stripFlags(res)}]);
+    const stripped = stripFlags(res);
+    const isReportLeak = res.includes("###WEATHER_REPORT###") || stripped === "";
+    const finalContent = isReportLeak
+      ? "今の天気を見てみたいということですね。\n画面下の「☀️ 今の天気を見てみる」ボタンを押してみてください。"
+      : stripped;
+    setMessages(prev=>[...prev, {role:"assistant", content:finalContent}]);;
     if(tc && !entryWeather) setEntryWeather(tc);
     // C案：最低3ターン以降に気づきカードを表示
     if(fl && fl!=="INSIGHT_HOLD" && suggestCount<2 && nt>=3){
