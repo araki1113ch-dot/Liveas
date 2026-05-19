@@ -648,11 +648,10 @@ function App() {
 function LP({onStart, onConcierge}) {
   return (
     <div style={{fontFamily:F, backgroundColor:NAVY, minHeight:"100vh"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 24px",backgroundColor:"rgba(255,255,255,0.97)",borderBottom:"1px solid #E8ECF2"}}>
-        <div style={{fontFamily:"'Noto Serif JP',serif",fontSize:15,fontWeight:600,color:NAVY,letterSpacing:2}}>
+      <div style={{display:"flex",justifyContent:"flex-start",alignItems:"center",padding:"16px 24px",backgroundColor:"rgba(255,255,255,0.97)",borderBottom:"1px solid #E8ECF2"}}>
+        <div onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} style={{fontFamily:"'Noto Serif JP',serif",fontSize:15,fontWeight:600,color:NAVY,letterSpacing:2,cursor:"pointer"}}>
           LIVE-As<span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",backgroundColor:GOLD,marginLeft:4,verticalAlign:"middle",marginBottom:2}}></span>
         </div>
-        <div style={{fontSize:11,color:NAVY,opacity:0.5,letterSpacing:1}}>ライフアライメント</div>
       </div>
       <div style={{width:"100%",lineHeight:0}}>
         <img src={IMG_SRC} alt="お天気じゃなくて、お転機診断" style={{width:"100%",display:"block"}}/>
@@ -673,6 +672,29 @@ function LP({onStart, onConcierge}) {
         <p style={{marginTop:6,fontSize:11,color:"rgba(255,255,255,0.4)"}}>すぐに診断を始める方はこちら</p>
 
         <p style={{marginTop:16,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:1}}>匿名・無料</p>
+      </div>
+
+      {/* 対話の事例セクション（4カード） */}
+      <div style={{backgroundColor:"#F5F7FA",padding:"50px 24px"}}>
+        <p style={{fontSize:11,color:NAVY,letterSpacing:4,textAlign:"center",marginBottom:8}}>─ 対話の、ある事例 ─</p>
+        <p style={{fontSize:13,color:"#5C5040",lineHeight:2.0,textAlign:"center",marginBottom:28}}>
+          人生の節目で、対話がどう機能するか。<br/>
+          4つの事例をご紹介します。
+        </p>
+        <div style={{display:"flex",flexDirection:"column",gap:14,maxWidth:380,margin:"0 auto"}}>
+          {[
+            {num:"CASE  01",title:"管理職昇進と家族の重なり",href:"/case_01.html"},
+            {num:"CASE  02",title:"希望退職を募集された",href:"/case_02.html"},
+            {num:"CASE  03",title:"親の介護が気になり始めた",href:"/case_03.html"},
+            {num:"CASE  04",title:"相続の話し合い",href:"/case_04.html"}
+          ].map((c,i)=>(
+            <a key={i} href={c.href} style={{display:"block",backgroundColor:"#FFF",padding:"22px 20px",borderRadius:8,border:"1px solid #E8ECF2",boxShadow:"0 2px 8px rgba(0,0,0,0.04)",textDecoration:"none"}}>
+              <div style={{fontSize:10,color:GOLD,letterSpacing:4,marginBottom:6}}>{c.num}</div>
+              <div style={{fontSize:16,fontWeight:600,color:NAVY,lineHeight:1.5,marginBottom:6,fontFamily:"'Noto Serif JP',serif"}}>{c.title}</div>
+              <div style={{fontSize:12,color:GOLD,letterSpacing:2,textAlign:"right"}}>読む ›</div>
+            </a>
+          ))}
+        </div>
       </div>
 
       <div style={{backgroundColor:"#F8F6F1",padding:"36px 20px"}}>
@@ -727,7 +749,7 @@ function LP({onStart, onConcierge}) {
         <p style={{marginTop:10,fontSize:12,color:"#9C9080"}}>匿名・無料</p>
       </div>
       <div style={{padding:"22px",textAlign:"center",backgroundColor:NAVY}}>
-        <p style={{fontSize:12,color:"rgba(255,255,255,0.3)",letterSpacing:2}}>LIVE-As　|　ライフアライメント</p>
+        <p style={{fontSize:12,color:"rgba(255,255,255,0.3)",letterSpacing:2}}>LIVE-As</p>
       </div>
     </div>
   );
