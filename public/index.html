@@ -663,22 +663,20 @@ function LP({onStart, onConcierge}) {
         </div>
       </header>
 
-      {/* ①ファーストビュー（画像内にテキスト・波カット・見出しまですべて含む） */}
-      <section style={{position:"relative",overflow:"hidden",backgroundColor:NAVY}}>
-        <img src={IMG_SRC} alt="お天気じゃなくて、お転機診断" style={{width:"100%",display:"block"}}/>
-      </section>
-
-      {/* ②紺色セクション（画像の続き：サブテキスト＋ボタン＋匿名・無料） */}
-      <section style={{backgroundColor:NAVY,color:"#fff",padding:"0 28px 60px",textAlign:"center",marginTop:-1}}>
-        <p style={{fontSize:14,lineHeight:2.0,marginBottom:32,marginTop:8,opacity:0.9}}>
-          誰にも気を遣わず、本音で話せる場所です。<br/>
-          モヤモヤの重なりを、AIと一緒に整理していきます。
-        </p>
-        <div style={{display:"flex",flexDirection:"column",gap:12,maxWidth:340,margin:"0 auto 16px"}}>
-          <button onClick={onConcierge} style={btnPrimary}>このサイトについて聞いてみる ›</button>
-          <button onClick={onStart} style={btnSecondary}>自分のことを話してみる ›</button>
+      {/* ①+② ファーストビュー + 紺色セクション統合（画像と紺色を密着させる） */}
+      <section style={{backgroundColor:NAVY,color:"#fff",textAlign:"center"}}>
+        <img src={IMG_SRC} alt="お天気じゃなくて、お転機診断" style={{width:"100%",display:"block",verticalAlign:"bottom"}}/>
+        <div style={{padding:"0 28px 60px"}}>
+          <p style={{fontSize:14,lineHeight:2.0,marginBottom:32,marginTop:8,opacity:0.9}}>
+            誰にも気を遣わず、本音で話せる場所です。<br/>
+            モヤモヤの重なりを、AIと一緒に整理していきます。
+          </p>
+          <div style={{display:"flex",flexDirection:"column",gap:12,maxWidth:340,margin:"0 auto 16px"}}>
+            <button onClick={onConcierge} style={btnPrimary}>このサイトについて聞いてみる ›</button>
+            <button onClick={onStart} style={btnSecondary}>自分のことを話してみる ›</button>
+          </div>
+          <div style={{fontSize:11,color:GOLD,letterSpacing:4,marginTop:16}}>— 匿名・無料 —</div>
         </div>
-        <div style={{fontSize:11,color:GOLD,letterSpacing:4,marginTop:16}}>— 匿名・無料 —</div>
       </section>
 
       {/* ⑤事例セクション（②の次） */}
