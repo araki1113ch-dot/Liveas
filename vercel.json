@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/index.html",
+      "src": "public/**",
       "use": "@vercel/static"
     }
   ],
@@ -14,6 +14,10 @@
     {
       "src": "/api/claude",
       "dest": "/api/claude.js"
+    },
+    {
+      "src": "/case_(\\d+)\\.html",
+      "dest": "/public/case_$1.html"
     },
     {
       "src": "/(.*)",
