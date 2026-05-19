@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE 04：相続の話し合い ─ LIVE-As 対話の事例</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Serif JP', serif;
+    background-color: #E5E5E0;
+    color: #2C2C2C;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .phone-frame {
+    width: 100%;
+    max-width: 414px;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+  .lp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: rgba(255,255,255,0.97);
+    border-bottom: 1px solid #E8ECF2;
+  }
+  .lp-header .logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a2540;
+    letter-spacing: 2px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .gold-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #C9A961;
+    margin-left: 4px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+  }
+  .back-link {
+    font-size: 12px;
+    color: #6b7280;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .case-header {
+    background: linear-gradient(to bottom, #FAFBFC 0%, #F0F2F5 100%);
+    padding: 50px 28px 40px;
+    text-align: center;
+  }
+  .case-number {
+    font-size: 12px;
+    color: #C9A961;
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+  }
+  .case-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a2540;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .case-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    letter-spacing: 2px;
+  }
+  .situation {
+    background-color: #F5F7FA;
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .situation-label {
+    font-size: 11px;
+    color: #C9A961;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  .situation-text {
+    font-size: 14px;
+    color: #2C2C2C;
+    line-height: 2.0;
+  }
+  .dialogue-section {
+    background-color: #FAFAF7;
+    padding: 50px 24px;
+  }
+  .section-label {
+    text-align: center;
+    font-size: 12px;
+    color: #1a2540;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #C9A961;
+    display: block;
+    width: fit-content;
+    margin: 0 auto 24px;
+  }
+  .before-dialogue {
+    text-align: center;
+    font-size: 14px;
+    color: #1a2540;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    margin: 0 auto 28px;
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+  .dialogue {
+    max-width: 360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bubble {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.9;
+    max-width: 85%;
+  }
+  .user-bubble {
+    background-color: #1a2540;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .ai-bubble {
+    background-color: #fff;
+    color: #2C2C2C;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #E8ECF2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .summary-section {
+    background-color: #FAFAF7;
+    padding: 0 24px 50px;
+  }
+  .summary-box {
+    max-width: 340px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 28px 24px;
+    border-radius: 8px;
+    border: 1px solid #E8ECF2;
+  }
+  .summary-title {
+    font-size: 11px;
+    color: #C9A961;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    font-weight: 500;
+  }
+  .summary-title:first-child {
+    margin-top: 0;
+  }
+  .summary-box p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #2C2C2C;
+    margin: 0;
+  }
+  .weather-result {
+    text-align: center;
+    font-size: 14px;
+    color: #1a2540;
+    letter-spacing: 2px;
+    margin: 24px auto 0;
+    padding: 18px;
+    background-color: rgba(201, 169, 97, 0.12);
+    border-radius: 4px;
+    max-width: 340px;
+  }
+  .weather-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .weather-sub {
+    font-size: 11px;
+    color: #6b7280;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .invitation {
+    background-color: #FAFAF7;
+    padding: 60px 28px;
+    text-align: center;
+    border-top: 1px solid #E8ECF2;
+  }
+  .invitation-text {
+    font-size: 18px;
+    color: #1a2540;
+    line-height: 2.0;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .invitation-sub {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 2.0;
+    margin-bottom: 32px;
+  }
+  .cta-section {
+    background-color: #1a2540;
+    padding: 60px 28px;
+    text-align: center;
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn {
+    display: block;
+    padding: 16px 24px;
+    border-radius: 50px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #D4A93C, #B8902E);
+    color: #1a2540;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: #C9A961;
+    border: 1px solid #C9A961;
+  }
+  .footer {
+    background-color: #1a2540;
+    color: rgba(255,255,255,0.5);
+    padding: 24px 28px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .footer a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="phone-frame" id="top">
+
+    <header class="lp-header">
+      <a href="/" class="logo">
+        LIVE-As<span class="gold-dot"></span>
+      </a>
+      <a href="/" class="back-link">← 戻る</a>
+    </header>
+
+    <section class="case-header">
+      <div class="case-number">CASE  04</div>
+      <h1 class="case-title">相続の話し合い</h1>
+      <div class="case-subtitle">─ 対話の、ある一例 ─</div>
+    </section>
+
+    <section class="situation">
+      <div class="situation-label">─ シチュエーション ─</div>
+      <p class="situation-text">
+        60代・男性(長男)<br>
+        両親は80代を超えた。<br>
+        そろそろ相続のことを考えなければと<br>
+        思いつつ、妹と弟と一度も話したことがない。
+      </p>
+    </section>
+
+    <section class="dialogue-section">
+      <div class="section-label">対話の抜粋</div>
+      <p class="before-dialogue">人に言えないことも、ここでなら本音のままで。</p>
+      <div class="dialogue">
+
+        <div class="bubble user-bubble">
+          父と母も80を超えて、そろそろ相続のことを考えなきゃと思ってるんですけど、兄弟と一度も話したことがなくて。
+        </div>
+
+        <div class="bubble ai-bubble">
+          ご両親が80代に入られて、相続のことを考え始められたのですね。<br><br>
+          一つ聞かせてください。<br>
+          今、気になっているのは、相続の制度や手続きそのものですか? それとも、ご兄弟と話せていないことから来る、見えなさですか?
+        </div>
+
+        <div class="bubble user-bubble">
+          話せていないことの方が大きいです。妹と弟がいるんですけど、何をどう切り出していいか分からなくて。
+        </div>
+
+        <div class="bubble ai-bubble">
+          ご兄弟との話し合いを、どう始めるかが見えていないのですね。<br><br>
+          もうひとつ伺ってもいいですか。<br>
+          ご自身の中だけにある気持ち、まだ言葉にしていないものはありますか?
+        </div>
+
+        <div class="bubble user-bubble">
+          ……正直、実家は継ぎたくないんです。<br>
+          遠方ですし、自分の生活もあるし。<br>
+          でも長男なので、それを口にできなくて。<br>
+          父と母にも、妻にも言えていません。
+        </div>
+
+        <div class="bubble ai-bubble">
+          話してくださってありがとうございます。<br><br>
+          ご両親への気持ちと、ご自身の現実と、ふたつが絡んでいるようですね。<br>
+          少し整理してみましょうか。
+        </div>
+
+      </div>
+    </section>
+
+    <section class="summary-section">
+      <div class="summary-box">
+        <div class="summary-title">整理されたこと</div>
+        <p>
+          相続の制度や手続きが分からないのではなく、<br>
+          「実家を継ぎたくない」という気持ちを、<br>
+          誰にも話せていないことが、<br>
+          迷いの中心だった。<br>
+          長男としての役割を、<br>
+          自分一人で抱えていた。
+        </p>
+
+        <div class="summary-title">最初の一歩</div>
+        <p>
+          まず、自分の中の<br>
+          「継ぎたくない」という気持ちを、<br>
+          自分自身に許す。<br>
+          そのうえで、配偶者に<br>
+          「一度、気持ちを聞いてほしい」と<br>
+          伝えてみる。
+        </p>
+      </div>
+
+      <div class="weather-result">
+        <span class="weather-icon">☂️</span>
+        今日の天気 ─ 雨
+        <div class="weather-sub">長年の先送りと、言えない気持ち</div>
+      </div>
+    </section>
+
+    <section class="invitation">
+      <p class="invitation-text">
+        あなたも、<br>
+        自分の天気を見てみませんか。
+      </p>
+      <p class="invitation-sub">
+        誰にも気を遣わず、本音を話せる場所です。<br>
+        モヤモヤの重なりを、AIと一緒に整理していきます。
+      </p>
+    </section>
+
+    <section class="cta-section">
+      <div class="btn-group">
+        <a href="/" class="btn btn-primary">自分のことを話してみる ›</a>
+        <a href="/" class="btn btn-secondary">このサイトについて聞いてみる ›</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a href="/">トップへ戻る</a>
+    </footer>
+
+  </div>
+</body>
+</html>

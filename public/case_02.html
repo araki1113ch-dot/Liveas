@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE 02：希望退職を募集された ─ LIVE-As 対話の事例</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Serif JP', serif;
+    background-color: #E5E5E0;
+    color: #2C2C2C;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .phone-frame {
+    width: 100%;
+    max-width: 414px;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* ヘッダー */
+  .lp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: rgba(255,255,255,0.97);
+    border-bottom: 1px solid #E8ECF2;
+  }
+  .lp-header .logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a2540;
+    letter-spacing: 2px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .gold-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #C9A961;
+    margin-left: 4px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+  }
+  .back-link {
+    font-size: 12px;
+    color: #6b7280;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .back-link:hover {
+    color: #1a2540;
+  }
+
+  /* タイトル */
+  .case-header {
+    background: linear-gradient(to bottom, #FAFBFC 0%, #F0F2F5 100%);
+    padding: 50px 28px 40px;
+    text-align: center;
+  }
+  .case-number {
+    font-size: 12px;
+    color: #C9A961;
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+  }
+  .case-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a2540;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .case-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    letter-spacing: 2px;
+  }
+
+  /* シチュエーション */
+  .situation {
+    background-color: #F5F7FA;
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .situation-label {
+    font-size: 11px;
+    color: #C9A961;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  .situation-text {
+    font-size: 14px;
+    color: #2C2C2C;
+    line-height: 2.0;
+  }
+
+  /* 対話セクション */
+  .dialogue-section {
+    background-color: #FAFAF7;
+    padding: 50px 24px;
+  }
+  .section-label {
+    text-align: center;
+    font-size: 12px;
+    color: #1a2540;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #C9A961;
+    display: block;
+    width: fit-content;
+    margin: 0 auto 24px;
+  }
+  .before-dialogue {
+    text-align: center;
+    font-size: 14px;
+    color: #1a2540;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    margin: 0 auto 28px;
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+  .dialogue {
+    max-width: 360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bubble {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.9;
+    max-width: 85%;
+  }
+  .user-bubble {
+    background-color: #1a2540;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .ai-bubble {
+    background-color: #fff;
+    color: #2C2C2C;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #E8ECF2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .bubble-name {
+    font-size: 10px;
+    color: #C9A961;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  /* 整理ボックス */
+  .summary-section {
+    background-color: #FAFAF7;
+    padding: 0 24px 50px;
+  }
+  .summary-box {
+    max-width: 340px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 28px 24px;
+    border-radius: 8px;
+    border: 1px solid #E8ECF2;
+  }
+  .summary-title {
+    font-size: 11px;
+    color: #C9A961;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    font-weight: 500;
+  }
+  .summary-title:first-child {
+    margin-top: 0;
+  }
+  .summary-box p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #2C2C2C;
+    margin: 0;
+  }
+  .weather-result {
+    text-align: center;
+    font-size: 14px;
+    color: #1a2540;
+    letter-spacing: 2px;
+    margin: 24px auto 0;
+    padding: 18px;
+    background-color: rgba(201, 169, 97, 0.12);
+    border-radius: 4px;
+    max-width: 340px;
+  }
+  .weather-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .weather-sub {
+    font-size: 11px;
+    color: #6b7280;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+
+  /* CTA誘導セクション */
+  .invitation {
+    background-color: #FAFAF7;
+    padding: 60px 28px;
+    text-align: center;
+    border-top: 1px solid #E8ECF2;
+  }
+  .invitation-text {
+    font-size: 18px;
+    color: #1a2540;
+    line-height: 2.0;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .invitation-sub {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 2.0;
+    margin-bottom: 32px;
+  }
+
+  /* CTAボタン */
+  .cta-section {
+    background-color: #1a2540;
+    padding: 60px 28px;
+    text-align: center;
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn {
+    display: block;
+    padding: 16px 24px;
+    border-radius: 50px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #D4A93C, #B8902E);
+    color: #1a2540;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: #C9A961;
+    border: 1px solid #C9A961;
+  }
+
+  /* フッター */
+  .footer {
+    background-color: #1a2540;
+    color: rgba(255,255,255,0.5);
+    padding: 24px 28px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .footer a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    margin: 0 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="phone-frame" id="top">
+
+    <!-- ヘッダー -->
+    <header class="lp-header">
+      <a href="/" class="logo">
+        LIVE-As<span class="gold-dot"></span>
+      </a>
+      <a href="/" class="back-link">← 戻る</a>
+    </header>
+
+    <!-- ケースタイトル -->
+    <section class="case-header">
+      <div class="case-number">CASE  02</div>
+      <h1 class="case-title">希望退職を<br>募集された</h1>
+      <div class="case-subtitle">─ 対話の、ある一例 ─</div>
+    </section>
+
+    <!-- シチュエーション -->
+    <section class="situation">
+      <div class="situation-label">─ シチュエーション ─</div>
+      <p class="situation-text">
+        40代・男性<br>
+        勤務先で希望退職の募集が始まった。<br>
+        辞めるべきか、辞めないべきか、<br>
+        決められない。
+      </p>
+    </section>
+
+    <!-- 対話 -->
+    <section class="dialogue-section">
+      <div class="section-label">対話の抜粋</div>
+      <p class="before-dialogue">人に言えないことも、ここでなら本音のままで。</p>
+      <div class="dialogue">
+
+        <div class="bubble user-bubble">
+          希望退職を募集されて、どうするか悩んでます。
+        </div>
+
+        <div class="bubble ai-bubble">
+          そうなのですね。希望退職という大きな選択肢が、目の前に出てきたのですね。<br><br>
+          一つ聞かせてください。<br>
+          悩んでいるのは、応じるかどうかという決断そのものですか? それとも、応じた後の「これからどう生きるか」という先の見えなさですか?
+        </div>
+
+        <div class="bubble user-bubble">
+          辞めるべきか、やめないべきか。<br>
+          どちらもフィフティーフィフティーです。
+        </div>
+
+        <div class="bubble ai-bubble">
+          五分五分ということは、両方に大切なものがあるのですね。<br><br>
+          もうひとつ伺ってもいいですか。<br>
+          ご自身の中だけにある気持ち、まだ言葉にしていないものはありますか?
+        </div>
+
+        <div class="bubble user-bubble">
+          ……正直、今の仕事に疲れています。<br>
+          辞めて少しゆっくりしたい気持ちもある。<br>
+          でも、年齢を考えると次が見つからないかもしれなくて、家族にも言えていません。
+        </div>
+
+        <div class="bubble ai-bubble">
+          話してくださってありがとうございます。<br><br>
+          応募の判断と、ご自身の気持ちと、ふたつが絡まっているようですね。<br>
+          少し整理してみましょうか。
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 整理ボックス -->
+    <section class="summary-section">
+      <div class="summary-box">
+        <div class="summary-title">整理されたこと</div>
+        <p>
+          迷いの中心は「辞めるか辞めないか」ではなく、<br>
+          「本当は疲れている」という気持ちを、<br>
+          誰にも話せていないことだった。<br>
+          判断より先に、自分の気持ちを<br>
+          見つめる時間が必要だった。
+        </p>
+
+        <div class="summary-title">最初の一歩</div>
+        <p>
+          まず、自分が本当に疲れていることを、<br>
+          自分自身に認める。<br>
+          そのうえで、配偶者と<br>
+          「これからの暮らし方」を話してみる。
+        </p>
+      </div>
+
+      <div class="weather-result">
+        <span class="weather-icon">☂️</span>
+        今日の天気 ─ 雨
+        <div class="weather-sub">本音が静かに降りてきている状態</div>
+      </div>
+    </section>
+
+    <!-- 誘導 -->
+    <section class="invitation">
+      <p class="invitation-text">
+        あなたも、<br>
+        自分の天気を見てみませんか。
+      </p>
+      <p class="invitation-sub">
+        誰にも気を遣わず、本音を話せる場所です。<br>
+        モヤモヤの重なりを、AIと一緒に整理していきます。
+      </p>
+    </section>
+
+    <!-- CTAボタン -->
+    <section class="cta-section">
+      <div class="btn-group">
+        <a href="/" class="btn btn-primary">自分のことを話してみる ›</a>
+        <a href="/" class="btn btn-secondary">このサイトについて聞いてみる ›</a>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="footer">
+      <a href="/">トップへ戻る</a>
+    </footer>
+
+  </div>
+</body>
+</html>
