@@ -638,13 +638,13 @@ function App() {
   };
 
   if (screen==="lp")             return <LP onStart={()=>setScreen("step1")} onConcierge={()=>setScreen("concierge")}/>;
-  if (screen==="concierge")      return <ConciergeChat onStart={()=>setScreen("step1")} onBack={()=>setScreen("lp")}/>;
-  if (screen==="step1")          return <Step1 age={age} setAge={setAge} onNext={()=>setScreen("step2")} onBack={()=>setScreen("lp")}/>;
-  if (screen==="step2")          return <Step2 themes={themes} toggle={toggleTheme} onNext={startChat} onBack={()=>setScreen("step1")}/>;
-  if (screen==="chat")           return <Chat messages={messages} input={input} setInput={setInput} loading={loading} onSend={send} insightFlag={insightFlag} onWeather={requestWeather} onContinue={continueChat} chatEndRef={chatEndRef} entryWeather={entryWeather}/>;
-  if (screen==="reveal"&&report) return <Reveal report={report} entryWeather={entryWeather} onNext={()=>setScreen("report")}/>;
-  if (screen==="report"&&report) return <Report report={report} entryWeather={entryWeather} onReset={reset} onMore={()=>setScreen("deep_intro")}/>;
-  if (screen==="deep_intro")     return <DeepIntro onBack={()=>setScreen("report")}/>;
+  if (screen==="concierge")      return <ConciergeChat onStart={()=>setScreen("step1")} onBack={()=>setScreen("lp")} onTop={reset}/>;
+  if (screen==="step1")          return <Step1 age={age} setAge={setAge} onNext={()=>setScreen("step2")} onBack={()=>setScreen("lp")} onTop={reset}/>;
+  if (screen==="step2")          return <Step2 themes={themes} toggle={toggleTheme} onNext={startChat} onBack={()=>setScreen("step1")} onTop={reset}/>;
+  if (screen==="chat")           return <Chat messages={messages} input={input} setInput={setInput} loading={loading} onSend={send} insightFlag={insightFlag} onWeather={requestWeather} onContinue={continueChat} chatEndRef={chatEndRef} entryWeather={entryWeather} onTop={reset}/>;
+  if (screen==="reveal"&&report) return <Reveal report={report} entryWeather={entryWeather} onNext={()=>setScreen("report")} onTop={reset}/>;
+  if (screen==="report"&&report) return <Report report={report} entryWeather={entryWeather} onReset={reset} onMore={()=>setScreen("deep_intro")} onTop={reset}/>;
+  if (screen==="deep_intro")     return <DeepIntro onBack={()=>setScreen("report")} onTop={reset}/>;
   return null;
 }
 
@@ -751,7 +751,7 @@ function LP({onStart, onConcierge}) {
 // ============================================================
 // CONCIERGE CHAT：サイトについて聞ける入口対話
 // ============================================================
-function ConciergeChat({ onStart, onBack }) {
+function ConciergeChat({ onStart, onBack, onTop }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -820,7 +820,11 @@ function ConciergeChat({ onStart, onBack }) {
       <div style={{ padding: "13px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${WG}`, backgroundColor: "#FDFAF5" }}>
         <button onClick={onBack} style={{ background: "none", border: "none", color: BROWN, fontSize: 13, cursor: "pointer", fontFamily: F }}>← 戻る</button>
         <span style={{ fontSize: 14, fontWeight: 700, color: DARK, letterSpacing: 1, fontFamily: "'Noto Serif JP',serif" }}>サイトについて聞く</span>
-        <span style={{ fontSize: 11, color: "#8C8070", width: 50 }}>　</span>
+        {onTop ? (
+          <button onClick={onTop} style={{ background: "none", border: "none", color: BROWN, fontSize: 11, cursor: "pointer", fontFamily: F, opacity: 0.7 }}>TOPに戻る</button>
+        ) : (
+          <span style={{ fontSize: 11, color: "#8C8070", width: 50 }}>　</span>
+        )}
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "18px 14px", display: "flex", flexDirection: "column", gap: 14 }}>
@@ -904,9 +908,9 @@ function ConciergeChat({ onStart, onBack }) {
 // ============================================================
 // STEP1：年代
 // ============================================================
-function Step1({ age, setAge, onNext, onBack }) {
+function Step1({ age, setAge, onNext, onBack, onTop }) {
   return (
-    <StepShell eye="はじめに" title="あなたの年代を教えてください" sub="匿名のまま進められます" pct={50} onBack={onBack}>
+    <StepShell eye="はじめに" title="あなたの年代を教えてください" sub="匿名のまま進められます" pct={50} onBack={onBack} onTop={onTop}>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
         {["30代以下","40代","50代","60代以上","答えたくない"].map(opt=>(
           <button key={opt} style={{...OB,...(age===opt?OO:{})}} onClick={()=>{ setAge(opt); setTimeout(onNext,200); }}>{opt}</button>
@@ -919,9 +923,9 @@ function Step1({ age, setAge, onNext, onBack }) {
 // ============================================================
 // STEP2：テーマ
 // ============================================================
-function Step2({ themes, toggle, onNext, onBack }) {
+function Step2({ themes, toggle, onNext, onBack, onTop }) {
   return (
-    <StepShell eye="もう一つだけ" title="気になっているテーマは？" sub="複数選んでいただいて構いません" pct={100} onBack={onBack}>
+    <StepShell eye="もう一つだけ" title="気になっているテーマは？" sub="複数選んでいただいて構いません" pct={100} onBack={onBack} onTop={onTop}>
       <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center",marginBottom:24}}>
         {THEMES.map(t=>(
           <button key={t} style={{...CB,...(themes.includes(t)?CO:{})}} onClick={()=>toggle(t)}>{t}</button>
@@ -944,7 +948,7 @@ function Step2({ themes, toggle, onNext, onBack }) {
 // ============================================================
 // CHAT：気づき検知＋誘導カード＋入口の天気表示
 // ============================================================
-function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeather, onContinue, chatEndRef, entryWeather }) {
+function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeather, onContinue, chatEndRef, entryWeather, onTop }) {
   const visible = messages.filter(m=>!m.hidden && !m.isReport && !m.isWeatherRequest);
   const insightMsg = insightFlag ? INSIGHT_MESSAGES[insightFlag] : null;
   const ew = entryWeather ? WEATHER[entryWeather] : null;
@@ -953,15 +957,16 @@ function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeath
     <div style={{display:"flex",flexDirection:"column",height:"100vh",backgroundColor:CREAM,maxWidth:600,margin:"0 auto",fontFamily:F}}>
       <div style={{padding:"13px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${WG}`,backgroundColor:"#FDFAF5"}}>
         <span style={{fontSize:14,fontWeight:700,color:DARK,letterSpacing:1,fontFamily:"'Noto Serif JP',serif"}}>お転機診断</span>
-        {ew ? (
-          <div style={{display:"flex",alignItems:"center",gap:5,animation:"fadeIn 0.8s ease"}}>
-            <span style={{fontSize:10,color:"#8C8070"}}>話す前：</span>
-            <span style={{fontSize:15}}>{ew.emoji}</span>
-            <span style={{fontSize:10,color:ew.accent,fontWeight:600}}>{ew.label}</span>
-          </div>
-        ) : (
-          <span style={{fontSize:11,color:"#8C8070"}}>LIVE-As</span>
-        )}
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          {ew ? (
+            <div style={{display:"flex",alignItems:"center",gap:5,animation:"fadeIn 0.8s ease"}}>
+              <span style={{fontSize:10,color:"#8C8070"}}>話す前：</span>
+              <span style={{fontSize:15}}>{ew.emoji}</span>
+              <span style={{fontSize:10,color:ew.accent,fontWeight:600}}>{ew.label}</span>
+            </div>
+          ) : null}
+          {onTop && <button onClick={onTop} style={{background:"none",border:"none",color:BROWN,fontSize:11,cursor:"pointer",padding:0,fontFamily:F,opacity:0.7}}>TOPに戻る</button>}
+        </div>
       </div>
 
       <div style={{flex:1,overflowY:"auto",padding:"18px 14px",display:"flex",flexDirection:"column",gap:14}}>
@@ -1024,7 +1029,7 @@ function Chat({ messages, input, setInput, loading, onSend, insightFlag, onWeath
 // ============================================================
 // REVEAL：Before/After天気表示
 // ============================================================
-function Reveal({ report, entryWeather, onNext }) {
+function Reveal({ report, entryWeather, onNext, onTop }) {
   const w = WEATHER[report.weather] || WEATHER.cloudy;
   const ew = entryWeather ? WEATHER[entryWeather] : null;
   const changed = ew && entryWeather !== report.weather;
@@ -1077,6 +1082,9 @@ function Reveal({ report, entryWeather, onNext }) {
         <button onClick={onNext} style={{backgroundColor:w.accent,color:"#FFF8F0",border:"none",borderRadius:30,padding:"14px 36px",fontSize:14,cursor:"pointer",letterSpacing:1,fontFamily:F,boxShadow:"0 4px 16px rgba(0,0,0,0.15)",opacity:show?1:0,transition:"opacity 0.5s ease 1.2s"}}>
           今の整理を見る　›
         </button>
+        {onTop && <div style={{marginTop:20,opacity:show?0.7:0,transition:"opacity 0.5s ease 1.4s"}}>
+          <button onClick={onTop} style={{background:"none",border:"none",color:w.accent,fontSize:12,cursor:"pointer",fontFamily:F,textDecoration:"underline"}}>TOPに戻る</button>
+        </div>}
       </div>
     </div>
   );
@@ -1085,7 +1093,7 @@ function Reveal({ report, entryWeather, onNext }) {
 // ============================================================
 // REPORT：気づきレベル別レポート＋Before/Afterサマリー
 // ============================================================
-function Report({ report, entryWeather, onReset, onMore }) {
+function Report({ report, entryWeather, onReset, onMore, onTop }) {
   const w = WEATHER[report.weather] || WEATHER.cloudy;
   const ew = entryWeather ? WEATHER[entryWeather] : null;
   const changed = ew && entryWeather !== report.weather;
@@ -1199,7 +1207,7 @@ function Report({ report, entryWeather, onReset, onMore }) {
           もう少し深く整理する
         </button>
         <button onClick={onReset} style={{backgroundColor:"transparent",border:`1px solid rgba(168,197,160,0.4)`,color:LGREEN,borderRadius:30,padding:"11px 32px",fontSize:13,cursor:"pointer",fontFamily:F}}>
-          もう一度、話してみる
+          TOPに戻る
         </button>
       </div>
     </div>
@@ -1218,12 +1226,15 @@ function RC({ label, color, content }) {
 // ============================================================
 // DEEP INTRO
 // ============================================================
-function DeepIntro({ onBack }) {
+function DeepIntro({ onBack, onTop }) {
   return (
     <div style={{minHeight:"100vh",backgroundColor:CREAM,fontFamily:F}}>
       <div style={{height:3,background:`linear-gradient(to right,${GOLD},${GOLD2})`}}/>
       <div style={{maxWidth:460,margin:"0 auto",padding:"32px 24px 48px"}}>
-        <button style={{background:"none",border:"none",color:BROWN,fontSize:14,cursor:"pointer",marginBottom:28,padding:0,fontFamily:F}} onClick={onBack}>← 戻る</button>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:28}}>
+          <button style={{background:"none",border:"none",color:BROWN,fontSize:14,cursor:"pointer",padding:0,fontFamily:F}} onClick={onBack}>← 戻る</button>
+          {onTop && <button style={{background:"none",border:"none",color:BROWN,fontSize:13,cursor:"pointer",padding:0,fontFamily:F,opacity:0.7}} onClick={onTop}>TOPに戻る</button>}
+        </div>
         <p style={{fontSize:11,color:BROWN,letterSpacing:3,marginBottom:12}}>LIVE-As について</p>
         <h2 style={{fontFamily:"'Noto Serif JP',serif",fontSize:20,fontWeight:700,color:DARK,lineHeight:1.7,marginBottom:16}}>
           お転機診断は、<br/>今の天気を知るための場所。
@@ -1271,14 +1282,17 @@ function DeepIntro({ onBack }) {
 // ============================================================
 // 共通
 // ============================================================
-function StepShell({ eye, title, sub, pct, onBack, children }) {
+function StepShell({ eye, title, sub, pct, onBack, onTop, children }) {
   return (
     <div style={{minHeight:"100vh",backgroundColor:CREAM,fontFamily:F}}>
       <div style={{height:3,backgroundColor:WG}}>
         <div style={{height:"100%",background:`linear-gradient(to right,${GOLD},${GOLD2})`,width:`${pct}%`,transition:"width 0.4s ease"}}/>
       </div>
       <div style={{maxWidth:460,margin:"0 auto",padding:"28px 24px 48px"}}>
-        <button style={{background:"none",border:"none",color:BROWN,fontSize:14,cursor:"pointer",marginBottom:28,padding:0,fontFamily:F}} onClick={onBack}>← 戻る</button>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:28}}>
+          <button style={{background:"none",border:"none",color:BROWN,fontSize:14,cursor:"pointer",padding:0,fontFamily:F}} onClick={onBack}>← 戻る</button>
+          {onTop && <button style={{background:"none",border:"none",color:BROWN,fontSize:13,cursor:"pointer",padding:0,fontFamily:F,opacity:0.7}} onClick={onTop}>TOPに戻る</button>}
+        </div>
         <div style={{textAlign:"center",marginBottom:32}}>
           <p style={{fontSize:11,color:BROWN,letterSpacing:3,marginBottom:12}}>{eye}</p>
           <h2 style={{fontSize:19,fontWeight:600,color:DARK,marginBottom:8,lineHeight:1.5,fontFamily:"'Noto Serif JP',serif"}}>{title}</h2>
