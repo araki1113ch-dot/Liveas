@@ -658,14 +658,10 @@ function LP({onStart, onConcierge}) {
   return (
     <div style={{fontFamily:"'Noto Serif JP',serif", backgroundColor:"#fff", minHeight:"100vh"}}>
 
-      {/* ヘッダー（LIVE-Asロゴ ＋ ライフアライメント ＋ ハンバーガー） */}
-      <header style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"18px 24px",backgroundColor:"#fff",borderBottom:"1px solid #E8ECF2"}}>
+      {/* ヘッダー（LIVE-Asロゴのみ） */}
+      <header style={{display:"flex",justifyContent:"flex-start",alignItems:"center",padding:"18px 24px",backgroundColor:"#fff",borderBottom:"1px solid #E8ECF2"}}>
         <div onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} style={{fontFamily:"'Noto Serif JP',serif",fontSize:18,fontWeight:600,color:NAVY,letterSpacing:2,cursor:"pointer"}}>
           LIVE-As<span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",backgroundColor:GOLD,marginLeft:4,verticalAlign:"middle",marginBottom:2}}></span>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:16}}>
-          <span style={{fontSize:11,color:"#6B7280",letterSpacing:1}}>ライフアライメント</span>
-          <span style={{fontSize:20,color:NAVY,cursor:"pointer",lineHeight:1}}>☰</span>
         </div>
       </header>
 
